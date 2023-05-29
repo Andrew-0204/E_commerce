@@ -5,4 +5,6 @@
 # version 2: Custom Dynamic Middleware for ApiKey and Permissions
 
 # version 3: Xử lý ErrorHandler trong API
-ErrorHandler giúp bạn quản lý các lỗi xảy ra trong quá trình xử lý yêu cầu và trả về phản hồi phù hợp cho người dùng
+
+# version 4: Make Your API Response use class
+Cách tạo một class success response để thống nhất ngữ cảnh của một công ty/nhóm
