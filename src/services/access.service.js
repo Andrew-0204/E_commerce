@@ -6,7 +6,11 @@ const crypto = require('node:crypto')
 const KeyTokenService = require("./keyToken.service")
 const { createTokenPair } = require("../auth/auth.Utils")
 const { getInfoData } = require("../utlis")
-const { BadRequestError, ConflictResquestError } = require("../core/error.response")
+const { BadRequestError, ConflictResquestError, AuthFailureError } = require("../core/error.response")
+
+// service // 
+const { findByEmail } = require("./shop.service")
+const { threadId } = require("node:worker_threads")
 
 const RoleShop = {
     SHOP: 'SHOP',
@@ -17,9 +21,43 @@ const RoleShop = {
 
 class AccessService {
 
+    /*
+        1 - Check email in dbs
+        2 - match password
+        3 - create AT vs RT and save
+        4 - general tokens
+        5 - get data return login 
+    */
+    static login = async( {email, password, refreshToken = null}) => {
+        // 1.
+        const foundShop = await findByEmail({email})
+        if (!foundShop) throw new BadRequestError('Shop not registered!')
+        // 2.
+        const match = bcrypt.compare( password, foundShop.password )
+        if (!match) throw new AuthFailureError('Authentication error')
+        // 3. 
+        // Created privateKey, publicKey
+        const privateKey = crypto.randomBytes(64).toString('hex')
+        const publicKey = crypto.randomBytes(64).toString('hex')
+        // 4. 
+        const tokens = await createTokenPair({ userId: foundShop._id, email}, publicKey, privateKey)
+
+        await KeyTokenService.createKeyToken({
+            refreshToken: tokens.refreshToken,
+            privateKey,
+            publicKey,
+            userId: foundShop._id
+        })
+        return {
+            metadata: {
+                shop: getInfoData({ fields: ['_id', 'name', 'email'], object: foundShop}),
+                tokens
+            }
+        }
+    }
+
     static signUp = async ({ name, email, password }) => {
-        // try{
-            // step 1: check email exists??
+
             const holderShop = await shopModel.findOne({ email }).lean()
 
             if (holderShop){
@@ -30,29 +68,11 @@ class AccessService {
                 name, email, password: passwordHash, roles: [RoleShop.SHOP]
             })
             if (newShop){
-                // created privateKey, publicKey xử dụng thuật toán bất đối xứng 
-                // privatekey -> Để cho ngưởi dùng. publicKey -> Để trong hệ thống của chúng ta
-                // privatekey -> sign token. publicKey -> vertify token
-                // Giả sử hacker truy cập vào hệ thống của chúng ta sẽ lấy được publicKey => nhưng mà publicKey không có quyền sign token => không thể đăng nhập vòa tài khoản được
-                // regis sau cho truy cập vào hệ thống luôn 
-                // const { privateKey, publicKey } = crypto.generateKeyPairSync('rsa', {
-                //     // rsa thuật toán của bất đối xứng
-                //     modulusLength: 4096,
-                //     publicKeyEncoding: {
-                //         type: 'pkcs1', // pkcs8
-                //         format: 'pem'
-                //     },
-                //     privateKeyEncoding: {
-                //         type: 'pkcs1',
-                //         format: 'pem'
-                //     }
-                //     // Public Key CryptoGraphy Standards 1
-                // })
+                // Created privateKey, publicKey
                 const privateKey = crypto.randomBytes(64).toString('hex')
                 const publicKey = crypto.randomBytes(64).toString('hex')
-
+                // Public key CryptoGraphy Standards! 
                 console.log({privateKey, publicKey}) // save collection KeyStore
-
                 const keyStore = await KeyTokenService.createKeyToken({
                     userId: newShop._id,
                     publicKey,
@@ -65,10 +85,7 @@ class AccessService {
                         message: 'keyStore error'
                     }
                 }
-                // console.log(`publicKeyString::`, publicKeyString)
-                // const publicKeyObject = crypto.createPublicKey( publicKeyString )
-                // console.log(`publicKeyObject::`, publicKeyObject)
-                // created token pair
+
                 const tokens = await createTokenPair({ userId: newShop._id, email}, publicKey, privateKey)
                 console.log('Created Token Success:', tokens)
 
@@ -85,13 +102,6 @@ class AccessService {
                 code: 201,
                 metadata: null
             }
-        // } catch (error) {
-        //     return {
-        //         code: 'xxx',
-        //         message: error.message,
-        //         status: 'error'
-        //     }
-        // }
     }
 
 }

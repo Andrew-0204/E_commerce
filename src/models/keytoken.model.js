@@ -20,11 +20,14 @@ var keyTokenSchema = new Schema({
         type:String,
         required:true
     },
-    refreshToken:{
+    refreshTokensUsed:{
         // detect hacker sử dụng trái phép token
         type:Array,
-        default: []
+        default: [] // những RF token đã được sử dụng
     },
+    refreshToken:{
+        type: String, required: true
+    }
 }, {
     collection: COLLECTION_NAME,
     timestamps: true
