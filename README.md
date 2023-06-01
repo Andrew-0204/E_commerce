@@ -9,6 +9,6 @@
 # version 4: Make Your API Response use class
 
 # version 5: Login Shop API
-Hoàn thành login/logout
-Làm rõ khái niệm accesstoken và refreshtoken
-Lưu 1 family token
+
+# version 6: Logout + Authentication
+Ensure the security and controlled access to resources or services provided by the API

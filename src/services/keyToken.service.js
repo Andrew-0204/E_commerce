@@ -1,31 +1,35 @@
-'use strict'
-// Viết hàm tạo token
-// hướng về modul => Đóng gói modul và gọi lẫn nhau => Hướng module gần giống hướng đối tượng
-const keytokenModel = require("../models/keytoken.model")
+'use strict';
+
+const keytokenModel = require('../models/keytoken.model');
+const { Types } = require('mongoose');
 
 class KeyTokenService {
-    
-    static createKeyToken = async ({ userId, publicKey, privateKey, refreshToken }) => {
-        try {
-            // level 0
-            // const publicKeyString = publicKey.toString()
-            // const tokens = await keytokenModel.create({
-            //     user: userId,
-            //     publicKey,
-            //     privateKey
-            // })
-            // return tokens ? tokens.publicKey : null
+  static createKeyToken = async ({ userId, publicKey, privateKey, refreshToken }) => {
+    try {
+      const filter = { user: userId };
+      const update = {
+        publicKey,
+        privateKey,
+        refreshTokenUsed: [],
+        refreshToken,
+      };
+      const options = { upsert: true, new: true };
 
-            // level xxx
-            const filter = {user: userId}, update ={
-                publicKey, privateKey, refreshTokenUsed: [], refreshToken
-            }, options = {upsert: true, new: true}
-            const tokens = await keytokenModel.findOneAndUpdate(filter, update, options)
-            return tokens? tokens.publicKey : null 
-        } catch(error){
-            return error
-        }
+      const tokens = await keytokenModel.findOneAndUpdate(filter, update, options);
+      return tokens ? tokens.publicKey : null;
+    } catch (error) {
+      return error;
     }
+  }
+
+  static findByUserId = async (userId) => {
+    return await keytokenModel.findOne({ user: new Types.ObjectId(userId) }).lean();
+  }  
+
+  static removeKeyById = async (id) => {
+    return await keytokenModel.findOneAndDelete({ _id: id });
+  }
+  
 }
 
-module.exports = KeyTokenService
+module.exports = KeyTokenService;
