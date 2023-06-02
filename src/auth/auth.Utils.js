@@ -11,6 +11,7 @@ const HEADER = {
   API_KEY: 'x-api-key',
   CLIENT_ID: 'x-client-id',
   AUTHORIZATION: 'authorization',
+  REFRESHTOKEN: 'x-rtoken-id',
 };
 
 // Public key retrieved from MongoDB => converted to hash string and saved in MongoDB
@@ -46,6 +47,51 @@ const createTokenPair = async (payload, publicKey, privateKey) => {
   }
 };
 
+const authenticationV2 = asyncHandler(async (req, res, next) => {
+  /*
+      1 - Check userId missing?
+      2 - Get accessToken
+      3 - Verify token
+      4 - Check user in the database
+      5 - Check keyStore with this userId
+      6 - All checks passed => return next()
+  */
+  // 1
+  const userId = req.headers[HEADER.CLIENT_ID];
+  if (!userId) throw new AuthFailureError('Invalid Request');
+
+  // 2
+  const keyStore = await findByUserId(userId);
+  if (!keyStore) throw new NotFoundError('KeyStore not found');
+
+  // 3
+  if (req.headers[HEADER.REFRESHTOKEN]){
+    try {
+      const refreshToken = req.headers[HEADER.REFRESHTOKEN]
+      const decodeUser = JWT.verify(refreshToken, keyStore.privateKey);
+      if (userId !== decodeUser.userId) throw new AuthFailureError('Invalid UserId');
+      req.keyStore = keyStore;
+      req.user = decodeUser;
+      req.refreshToken = refreshToken;
+      return next();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  const accessToken = req.headers[HEADER.AUTHORIZATION];
+  if (!accessToken) throw new AuthFailureError('Invalid Request');
+
+  try {
+    const decodeUser = JWT.verify(accessToken, keyStore.publicKey);
+    if (userId !== decodeUser.userId) throw new AuthFailureError('Invalid UserId');
+    req.keyStore = keyStore;
+    return next();
+  } catch (error) {
+    throw error;
+  }
+});
+
 const authentication = asyncHandler(async (req, res, next) => {
   /*
       1 - Check userId missing?
@@ -77,7 +123,13 @@ const authentication = asyncHandler(async (req, res, next) => {
   }
 });
 
+const verifyJWT = async (token, keySecret) => {
+  return await JWT.verify(token, keySecret)
+}
+
 module.exports = {
   createTokenPair,
   authentication,
+  verifyJWT,
+  authenticationV2,
 };
