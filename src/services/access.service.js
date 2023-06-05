@@ -31,7 +31,7 @@ class AccessService {
         
         if (keyStore.refreshTokensUsed.includes(refreshToken)){
             await KeyTokenService.deleteKeyById(userId);
-        throw new ForbiddenError('Something wrong happened! Please relogin');
+            throw new ForbiddenError('Something wrong happened! Please relogin');
         }
             
         if (keyStore.refreshToken !== refreshToken) {

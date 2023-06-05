@@ -11,9 +11,9 @@ const productSchema = new Schema({
     product_description: String, 
     product_price: { type: Number, required: true },
     product_quantity: { type: Number, required: true },
-    product_type: {type: String, required: true, enum: ['Electronics', 'Clothing', 'Funiture']},
-    product_shop: {type: Schema.Types.ObjectId, ref: 'Shop'},
-    product_attributes: { type: Schema.Types.Mixed, required: True}
+    product_type: { type: String, required: true, enum: ['Electronics', 'Clothing', 'Funiture'] },
+    product_shop: { type: Schema.Types.ObjectId, ref: 'Shop' },
+    product_attributes: { type: Schema.Types.Mixed, required: true}
 }, {
     collection: COLLECTION_NAME,
     timestamps: true
@@ -24,7 +24,8 @@ const productSchema = new Schema({
 const clothingSchema = new Schema({
     brand: {type: String, require: true},
     size: String,
-    material: String
+    material: String,
+    product_shop: { type: Schema.Types.ObjectId, ref: 'Shop' },
 }, {
     collection: 'clothes',
     timestamps: true
@@ -35,7 +36,8 @@ const clothingSchema = new Schema({
 const electronicSchema = new Schema({
     manufacturer: {type: String, require: true},
     model: String,
-    material: String
+    color: String,
+    product_shop: { type: Schema.Types.ObjectId, ref: 'Shop' },
 }, {
     collection: 'electronics',
     timestamps: true
@@ -43,6 +45,6 @@ const electronicSchema = new Schema({
 
 module.exports = {
     product: model(DOCUMENT_NAME, productSchema),
-    clothing: model('clothing', clothingSchema),
-    electronic: model('electronics', electronicSchema)
+    clothing: model('Clothing', clothingSchema),
+    electronic: model('Electronics', electronicSchema)
 }
