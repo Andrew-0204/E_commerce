@@ -17,9 +17,6 @@
 # version 8: Schema Product Ecommerce
 
 # version 9: API Product use Factory Pattern 
-Factory Pattern - sd phổ biến cho lập trình hướng đối tượng. 
-Một nhà máy sản xuất ra nhiều product hoặc nhiều nhà máy làm 1 sản phẩm chung.
-Có 3 loại Factory Pattern:
-1. Simple Factory Pattern: Vi phạm nguyên tắc đóng mỏ 1 function, 1 ứng dụng 
-2. Factory Method Pattern
-3. Abstract Factory Pattern
+
+# version 10: Schema Factory + Strategy
+Kiến trúc product theo Factory pattern là rất tối ưu nhưng vẫn còn nhược điểm là khi thêm 1 type mới thì phải chỉnh sửa trong kiến trúc => vẫn chưa hoàn toàn tối ưu 
