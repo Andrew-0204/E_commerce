@@ -21,11 +21,12 @@
 # version 10: Schema Factory + Strategy
 
 # version 11: Add Product Service API
-1. Query products [public]
-2. Query Product Using It's ID [public]
-3. Create new product [Shop]
+1. Query products [public]:
+2. Query Product Using It's ID [public]: 
+3. Create new product [Shop]: Done
 4. Update product [Shop] 
-5. Publish product [Shop]
-6. Unpublish product [Shop]
-7. Search products [Public]
-8. Draft products [Shop]
+5. Publish product [Shop]: Done
+6. Unpublish product [Shop]: Done
+7. Search products [Public]: Done
+8. Draft products [Shop]: Done
+9. Search All Product [Public]

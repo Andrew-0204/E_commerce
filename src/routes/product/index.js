@@ -8,6 +8,9 @@ const { authenticationV2 } = require('../../auth/auth.Utils');
 
 
 router.get('/search/:keySearch', asyncHandler(productController.getListSearchProduct))
+router.get('', asyncHandler(productController.findAllProducts))
+router.get('/:product_id', asyncHandler(productController.findProduct))
+
 
 // authentication
 router.use(authenticationV2);
