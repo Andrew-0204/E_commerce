@@ -30,3 +30,9 @@
 7. Search products [Public]: Done
 8. Draft products [Shop]: Done
 9. Search All Product [Public]
+
+# put vs patch:
+put -> req.body(full) -> database -> insert -> create()
+put -> req.body(full) -> database -> update if exists -> updateOne()
+
+patch -> req.body(partial) -> database -> update if exists -> updateOne()
