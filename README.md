@@ -19,4 +19,13 @@
 # version 9: API Product use Factory Pattern 
 
 # version 10: Schema Factory + Strategy
-Kiến trúc product theo Factory pattern là rất tối ưu nhưng vẫn còn nhược điểm là khi thêm 1 type mới thì phải chỉnh sửa trong kiến trúc => vẫn chưa hoàn toàn tối ưu 
+
+# version 11: Add Product Service API
+1. Query products [public]
+2. Query Product Using It's ID [public]
+3. Create new product [Shop]
+4. Update product [Shop] 
+5. Publish product [Shop]
+6. Unpublish product [Shop]
+7. Search products [Public]
+8. Draft products [Shop]
