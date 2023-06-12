@@ -23,6 +23,5 @@
 # version 11: Add Product Service API
 
 # version 12: inventories Model vs Services
-inventories - orders
-payments - carts
-inventories -> product_stocks ->products
+
+# version 13: Discount Model in eCommerce
