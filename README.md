@@ -21,18 +21,8 @@
 # version 10: Schema Factory + Strategy
 
 # version 11: Add Product Service API
-1. Query products [public]:
-2. Query Product Using It's ID [public]: 
-3. Create new product [Shop]: Done
-4. Update product [Shop] 
-5. Publish product [Shop]: Done
-6. Unpublish product [Shop]: Done
-7. Search products [Public]: Done
-8. Draft products [Shop]: Done
-9. Search All Product [Public]
 
-# put vs patch:
-put -> req.body(full) -> database -> insert -> create()
-put -> req.body(full) -> database -> update if exists -> updateOne()
-
-patch -> req.body(partial) -> database -> update if exists -> updateOne()
+# version 12: inventories Model vs Services
+inventories - orders
+payments - carts
+inventories -> product_stocks ->products
