@@ -14,7 +14,7 @@ var discountSchema = new Schema({
     discount_value: {type: Number, required: true}, // 10.000
     discount_code: {type: String, required: true}, // discount code
     discount_start_date: {type: Date, required: true}, // ngay bat dau
-    discount_enf_date: {type: Date, required: true}, // ngay ket thuc
+    discount_end_date: {type: Date, required: true}, // ngay ket thuc
     discount_max_uses: {type: Number, required: true}, // so luong discount duoc ap dung    
     discount_uses_count: {type: Number, required: true}, // so discount da su dung
     discount_users_used: {type: Array, default: []}, // ai da su dung
@@ -30,4 +30,4 @@ var discountSchema = new Schema({
 });
 
 //Export the model
-module.exports = model(DOCUMENT_NAME, apiKeySchema);
+module.exports = model(DOCUMENT_NAME, discountSchema);

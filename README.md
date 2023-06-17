@@ -25,3 +25,12 @@
 # version 12: inventories Model vs Services
 
 # version 13: Discount Model in eCommerce
+
+# version 14: Discount Service in eCommerce
+1 - Generator Discount Code [Shop | Admin]
+2 - Get All Discount Codes [User | Shop]
+3 - Get All Product by Discount Code [User]
+4 - Get Discount Amount [User]
+5 - Delete Discount Code [Admin | Shop]
+6 - Cancel Discount Code [User]
+
