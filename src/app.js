@@ -6,7 +6,6 @@ const morgan = require('morgan')
 const app = express()
 
 
-
 // init middlewates
 app.use(morgan("dev"))
 // app.use(morgan("combined")) 

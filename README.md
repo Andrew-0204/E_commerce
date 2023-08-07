@@ -27,10 +27,11 @@
 # version 13: Discount Model in eCommerce
 
 # version 14: Discount Service in eCommerce
-1 - Generator Discount Code [Shop | Admin]
-2 - Get All Discount Codes [User | Shop]
-3 - Get All Product by Discount Code [User]
-4 - Get Discount Amount [User]
-5 - Delete Discount Code [Admin | Shop]
-6 - Cancel Discount Code [User]
 
+# version 15: Cart service in eCommerce
+1. Add product to Cart [user]
+2. Reduce product quantity [user]
+3. Increase product quantity [user]
+4. Get list to Cart [user]
+5. Delete cart [user]
+6. Delete cart item [user]
