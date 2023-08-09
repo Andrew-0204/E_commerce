@@ -29,9 +29,10 @@
 # version 14: Discount Service in eCommerce
 
 # version 15: Cart service in eCommerce
-1. Add product to Cart [user]
-2. Reduce product quantity [user]
-3. Increase product quantity [user]
-4. Get list to Cart [user]
-5. Delete cart [user]
-6. Delete cart item [user]
+
+# version 16: Order Service API
+1. Create New Order [User]
+2. Query Orders [User]
+3. Query Order Using It's ID [User]
+4. Cancel Order [User]
+5. Update Order Status [Admin]

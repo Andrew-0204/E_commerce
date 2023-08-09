@@ -1,30 +1,30 @@
 'use strict'
 
 const { product, electronic, clothing, furniture } = require('../../models/product.model')
-const {Types} = require('mongoose')
-const {getSelectData, unGetSelectData, convertToObjectIdMongodb} = require('../../utlis/')
+const { Types } = require('mongoose')
+const { getSelectData, unGetSelectData, convertToObjectIdMongodb } = require('../../utlis/')
 
-const findAllDraftsForShop = async({ query, limit, skip }) => {
+const findAllDraftsForShop = async ({ query, limit, skip }) => {
     return await queryProduct({ query, limit, skip })
-}       
+}
 
-const findAllPublishForShop = async({ query, limit, skip }) => {
+const findAllPublishForShop = async ({ query, limit, skip }) => {
     return await queryProduct({ query, limit, skip })
-}       
+}
 
-const searchProductByUser = async({ keySearch }) => {
+const searchProductByUser = async ({ keySearch }) => {
     const regexSearch = new RegExp(keySearch)
     const results = await product.find({
         isPublished: true,
         $text: { $search: regexSearch }
-    },{score: {$meta: 'textScore'}})
-    .sort({score: {$meta: 'textScore'}})
-    .lean()
+    }, { score: { $meta: 'textScore' } })
+        .sort({ score: { $meta: 'textScore' } })
+        .lean()
 
     return results;
-}       
+}
 
-const publishProductByShop = async({product_shop, product_id}) => {
+const publishProductByShop = async ({ product_shop, product_id }) => {
     const foundShop = await product.findOne({
         product_shop: new Types.ObjectId(product_shop),
         _id: new Types.ObjectId(product_id)
@@ -33,12 +33,12 @@ const publishProductByShop = async({product_shop, product_id}) => {
 
     foundShop.isDraft = false
     foundShop.isPublished = true
-    const {modifiedCount} = await foundShop.updateOne(foundShop)
+    const { modifiedCount } = await foundShop.updateOne(foundShop)
 
     return modifiedCount
 }
 
-const unPublishProductByShop = async() => {
+const unPublishProductByShop = async () => {
     const foundShop = await product.findOne({
         product_shop: new Types.ObjectId(product_shop),
         _id: new Types.ObjectId(product_id)
@@ -47,29 +47,29 @@ const unPublishProductByShop = async() => {
 
     foundShop.isDraft = true
     foundShop.isPublished = false
-    const {modifiedCount} = await foundShop.updateOne(foundShop)
+    const { modifiedCount } = await foundShop.updateOne(foundShop)
 
     return modifiedCount
 }
 
-const findAllProducts = async({limit, sort, page, filter, select}) => {
+const findAllProducts = async ({ limit, sort, page, filter, select }) => {
     const skip = (page - 1) * limit
-    const sortBy = sort == 'ctime' ? {_id: -1} : {_id: 1}
+    const sortBy = sort == 'ctime' ? { _id: -1 } : { _id: 1 }
     const products = await product.find(filter)
-    .sort(sortBy)
-    .skip(skip)
-    .limit(limit)
-    .select(getSelectData(select))
-    .lean()
+        .sort(sortBy)
+        .skip(skip)
+        .limit(limit)
+        .select(getSelectData(select))
+        .lean()
 
-    return products 
+    return products
 }
 
-const findProduct = async({ product_id, unSelect}) => {
+const findProduct = async ({ product_id, unSelect }) => {
     return await product.findById(product_id).select(unGetSelectData(unSelect))
 }
 
-const updateProductById = async({
+const updateProductById = async ({
     productId,
     bodyUpdate,
     model,
@@ -80,7 +80,7 @@ const updateProductById = async({
     })
 }
 
-const queryProduct = async({ query, limit, skip }) => {
+const queryProduct = async ({ query, limit, skip }) => {
     return await product.find(query).
         populate('product_shop', 'name email -_id')
         .sort({ updateAt: -1 })
@@ -88,15 +88,28 @@ const queryProduct = async({ query, limit, skip }) => {
         .limit(limit)
         .lean()
         .exec()
-}       
+}
 
-const getProductById = async(productId) => {
-    return await product.findOne({ _id: convertToObjectIdMongodb(productId)}).lean()
+const getProductById = async (productId) => {
+    return await product.findOne({ _id: convertToObjectIdMongodb(productId) }).lean()
 
 }
 
+const checkProductByServer = async (product) => {
+    return await Promise.all(product.map(async product => {
+        const foundProduct = await getProductById(product.productId)
+        if (foundProduct) {
+            return {
+                price: foundProduct.product_price,
+                quantity: product.quantity,
+                productId: product.productId
+            }
+        }
+    }))
+}
+
 module.exports = {
-    findAllDraftsForShop, 
+    findAllDraftsForShop,
     publishProductByShop,
     findAllPublishForShop,
     unPublishProductByShop,
@@ -104,5 +117,6 @@ module.exports = {
     findAllProducts,
     findProduct,
     updateProductById,
-    getProductById
+    getProductById,
+    checkProductByServer
 }
